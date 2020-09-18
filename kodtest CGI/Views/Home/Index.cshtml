@@ -1,0 +1,84 @@
+﻿@model IEnumerable<kodtest_CGI.Models.BusinesscardViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+    <script src="~/Scripts/angular.js"></script>
+    <script>
+        var app = angular.module("MyApp",[]);
+        app.controller("MyController", function ($scope, $http)
+        {
+            $scope.addnewbusinesscard = function () {
+                var buttonclick = document.getElementById("addbtn").getAttribute("value");
+                if (buttonclick == "Insert")
+                {
+                    $scope.businesscard = {};
+                    $scope.businesscard.Name = $scope.Name;
+                    $scope.businesscard.SurName = $scope.SurName;
+                    $scope.businesscard.Telephone = $scope.Telephone;
+                    $scope.businesscard.Email = $scope.Email;
+                    $http(
+                        {
+                            method: 'POST',
+                            url: 'http://localhost:53342/api/PostNewBusinesscard',
+                            data: JSON.stringify($scope.businesscard),
+                        }).then(function (result)
+                        {
+                            alert(result.data);
+                            $scope.Name = "";
+                            $scope.SurName = "";
+                            $scope.Telephone = "";
+                            $scope.Email = "";
+                        });
+                }
+            }
+        })
+    </script>
+<div ng-app="MyApp" ng-controller="MyController">
+    <input type="text" placeholder="Förnamn" ng-model="Name"/><br />
+    <input type="text" placeholder="Efternamn" ng-model="SurName"/><br />
+    <input type="text" placeholder="Telefon" ng-model="Telephone"/><br />
+    <input type="text" placeholder="Email" ng-model="Email"/><br />
+    <input type="button" value="Lägg till visitkort" id="addbtn" ng-click="addnewbusinesscard()"/>
+      
+</div>
+
+<table class="table">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Name)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.SurName)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Telephone)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Email)
+        </th>
+        <th></th>
+    </tr>
+
+@foreach (var item in Model) {
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Name)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.SurName)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Telephone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Email)
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+            @Html.ActionLink("Delete", "Delete", new { id=item.Id })
+        </td>
+    </tr>
+}
+
+</table>
